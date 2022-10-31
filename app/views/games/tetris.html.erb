@@ -16,9 +16,12 @@
   }
 </style>
 
+<h2>Dinero: <span id="money">0</span></h2>
 <canvas width="320" height="640" id="game"></canvas>
 
 <script>
+  var money = 0
+
   function getRandomInt(min, max) {
     min = Math.ceil(min);
     max = Math.floor(max);
@@ -84,6 +87,11 @@
     return true;
   }
 
+  function addMoney() {
+    money = money + 10;
+    $('#money').text(money);
+  }
+
   function placeTetromino() {
     for (let row = 0; row < tetromino.matrix.length; row++) {
       for (let col = 0; col < tetromino.matrix[row].length; col++) {
@@ -100,7 +108,7 @@
 
     for (let row = playfield.length - 1; row >= 0; ) {
       if (playfield[row].every(cell => !!cell)) {
-
+        addMoney();
         for (let r = row; r >= 0; r--) {
           for (let c = 0; c < playfield[r].length; c++) {
             playfield[r][c] = playfield[r-1][c];
@@ -129,6 +137,7 @@
     context.textAlign = 'center';
     context.textBaseline = 'middle';
     context.fillText('GAME OVER!', canvas.width / 2, canvas.height / 2);
+    send_data();
   }
 
   const canvas = document.getElementById('game');
@@ -271,4 +280,18 @@
   });
 
   rAF = requestAnimationFrame(loop);
+
+  function send_data() {
+    $.ajax({
+      url: '<%="/user/#{current_user.id.to_s}/update_score"%>',
+      method: 'PUT',
+      data: { money: money },
+      success: function(result) {
+        alert('Se guardo el dinero')
+      },
+      error: function(result){
+        alert('No se pudo Guardar')
+      }
+    });
+  }
 </script>

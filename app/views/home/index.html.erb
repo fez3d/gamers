@@ -10,6 +10,7 @@
       <div class="d-flex flex-column">
         <a href="users/sign_in" class="align-self-center btn btn-primary">Ingresar</a>
         <a href="users/sign_up" class="align-self-center btn btn-primary m-2">Registrarse</a>
+        <a href="users/sign_up" class="align-self-center btn btn-primary m-2">Salirse</a>
         <% if current_user %>
           <%= button_to 'Salir', destroy_user_session_path, method: :delete, class: 'm-2 align-self-center btn btn-primary' %>
         <% end %> 

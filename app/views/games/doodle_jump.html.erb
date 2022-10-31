@@ -15,9 +15,11 @@
   }
 </style>
 
+<h2>Dinero: <span id="money">0</span></h2>
 <canvas width="375" height="667" id="game"></canvas>
 
 <script>
+  var money = 0;
   const canvas = document.getElementById('game');
   const context = canvas.getContext('2d');
 
@@ -41,6 +43,11 @@
     x: canvas.width / 2 - platformWidth / 2,
     y: platformStart
   }];
+
+  function addMoney() {
+    money = money + 1;
+    $('#money').text(money);
+  }
 
   // get a random number between the min (inclusive) and max (exclusive)
   function random(min, max) {
@@ -88,10 +95,12 @@
   let playerDir = 0;
   let keydown = false;
   let prevDoodleY = doodle.y;
+  let rAF = null;
+  let gameOver = false;
 
   // game loop
   function loop() {
-    requestAnimationFrame(loop);
+    rAF = requestAnimationFrame(loop);
     context.clearRect(0,0,canvas.width,canvas.height);
 
     // apply gravity to doodle
@@ -106,6 +115,7 @@
 
       // add more platforms to the top of the screen as doodle moves up
       while (platforms[platforms.length - 1].y > 0) {
+        addMoney();
         platforms.push({
           x: random(25, canvas.width - 25 - platformWidth),
           y: platforms[platforms.length - 1].y - (platformHeight + random(minPlatformSpace, maxPlatformSpace))
@@ -156,29 +166,37 @@
 
     // draw platforms
     context.fillStyle = 'green';
-    platforms.forEach(function(platform) {
-      context.fillRect(platform.x, platform.y, platformWidth, platformHeight);
+    if(!gameOver){
+      console.log(1)
+      platforms.forEach(function(platform) {
+        context.fillRect(platform.x, platform.y, platformWidth, platformHeight);
 
-      // make doodle jump if it collides with a platform from above
-      if (
-        // doodle is falling
-        doodle.dy > 0 &&
+        // make doodle jump if it collides with a platform from above
+        if (
+          // doodle is falling
+          doodle.dy > 0 &&
 
-        // doodle was previous above the platform
-        prevDoodleY + doodle.height <= platform.y &&
+          // doodle was previous above the platform
+          prevDoodleY + doodle.height <= platform.y &&
 
-        // doodle collides with platform
-        // (Axis Aligned Bounding Box [AABB] collision check)
-        doodle.x < platform.x + platformWidth &&
-        doodle.x + doodle.width > platform.x &&
-        doodle.y < platform.y + platformHeight &&
-        doodle.y + doodle.height > platform.y
-      ) {
-        // reset doodle position so it's on top of the platform
-        doodle.y = platform.y - doodle.height;
-        doodle.dy = bounceVelocity;
-      }
-    });
+          // doodle collides with platform
+          // (Axis Aligned Bounding Box [AABB] collision check)
+          doodle.x < platform.x + platformWidth &&
+          doodle.x + doodle.width > platform.x &&
+          doodle.y < platform.y + platformHeight &&
+          doodle.y + doodle.height > platform.y
+        ) {
+          // reset doodle position so it's on top of the platform
+          doodle.y = platform.y - doodle.height;
+          doodle.dy = bounceVelocity;
+        }
+
+        if(doodle.x < -20) {
+          showGameOver();
+        }
+      });
+    }
+    
 
     // draw doodle
     context.fillStyle = 'yellow';
@@ -213,6 +231,38 @@
     keydown = false;
   });
 
+   function showGameOver() {
+    console.log(12);
+    cancelAnimationFrame(rAF);
+    gameOver = true;
+
+    context.fillStyle = 'black';
+    context.globalAlpha = 0.75;
+    context.fillRect(0, canvas.height / 2 - 30, canvas.width, 60);
+
+    context.globalAlpha = 1;
+    context.fillStyle = 'white';
+    context.font = '36px monospace';
+    context.textAlign = 'center';
+    context.textBaseline = 'middle';
+    context.fillText('GAME OVER!', canvas.width / 2, canvas.height / 2);
+    send_data();
+  }
+
   // start the game
-  requestAnimationFrame(loop);
+  rAF = requestAnimationFrame(loop);
+
+  function send_data() {
+    $.ajax({
+      url: '<%="/user/#{current_user.id.to_s}/update_score"%>',
+      method: 'PUT',
+      data: { money: money },
+      success: function(result) {
+        alert('Se guardo el dinero')
+      },
+      error: function(result){
+        alert('No se pudo Guardar')
+      }
+    });
+  }
 </script>

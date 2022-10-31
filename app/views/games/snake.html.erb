@@ -15,9 +15,11 @@
   }
 </style>
 
+<h2>Dinero: <span id="money">0</span></h2>
 <canvas width="400" height="400" id="game"></canvas>
 
 <script>
+  var money = 0;
   var canvas = document.getElementById('game');
   var context = canvas.getContext('2d');
 
@@ -49,6 +51,11 @@
   // @see https://stackoverflow.com/a/1527820/2124254
   function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min)) + min;
+  }
+
+  function addMoney() {
+    money = money + 2;
+    $('#money').text(money);
   }
 
   // game loop
@@ -105,6 +112,7 @@
       // snake ate apple
       if (cell.x === apple.x && cell.y === apple.y) {
         snake.maxCells++;
+        addMoney();
 
         // canvas is 400x400 which is 25x25 grids
         apple.x = getRandomInt(0, 25) * grid;
@@ -125,6 +133,8 @@
 
           apple.x = getRandomInt(0, 25) * grid;
           apple.y = getRandomInt(0, 25) * grid;
+
+          send_data();
         }
       }
     });
@@ -161,4 +171,18 @@
 
   // start the game
   requestAnimationFrame(loop);
+
+  function send_data() {
+    $.ajax({
+      url: '<%="/user/#{current_user.id.to_s}/update_score"%>',
+      method: 'PUT',
+      data: { money: money },
+      success: function(result) {
+        alert('Se guardo el dinero')
+      },
+      error: function(result){
+        alert('No se pudo Guardar')
+      }
+    });
+  }
 </script>

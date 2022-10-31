@@ -12,9 +12,11 @@
   }
 </style>
 
+<h2>Dinero: <span id="money">0</span></h2>
 <canvas width="400" height="500" id="game"></canvas>
 
 <script>
+  var money = 0;
   const canvas = document.getElementById('game');
   const context = canvas.getContext('2d');
 
@@ -53,6 +55,11 @@
   // wall will be 12px
   const wallSize = 12;
   const bricks = [];
+
+  function addMoney() {
+    money = money + 1;
+    $('#money').text(money);
+  }
 
   // create the level by looping over each row and column in the level1 array
   // and creating an object with the bricks position (x, y) and color
@@ -146,6 +153,7 @@
       ball.y = 260;
       ball.dx = 0;
       ball.dy = 0;
+      send_data();
     }
 
     // check to see if ball collides with paddle. if they do change y velocity
@@ -165,6 +173,7 @@
       if (collides(ball, brick)) {
         // remove brick from the bricks array
         bricks.splice(i, 1);
+        addMoney();
 
         // ball is above or below the brick, change y velocity
         // account for the balls speed since it will be inside the brick when it
@@ -233,4 +242,18 @@
 
   // start the game
   requestAnimationFrame(loop);
+
+  function send_data() {
+    $.ajax({
+      url: '<%="/user/#{current_user.id.to_s}/update_score"%>',
+      method: 'PUT',
+      data: { money: money },
+      success: function(result) {
+        alert('Se guardo el dinero')
+      },
+      error: function(result){
+        alert('No se pudo Guardar')
+      }
+    });
+  }
 </script>
