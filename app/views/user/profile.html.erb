@@ -1,0 +1,8 @@
+<%= current_user.username %>
+
+
+<a href="/games/index" class="btn btn-primary">Seleccionar Juego</a>
+<a class="btn btn-primary">Comprar</a>
+<% if current_user %>
+  <%= button_to 'Salir', destroy_user_session_path, method: :delete, class: 'btn btn-primary' %>
+<% end %> 
