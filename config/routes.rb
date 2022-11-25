@@ -4,6 +4,7 @@ Rails.application.routes.draw do
   get 'games/snake'
   get 'games/tetris'
   get 'games/breakout'
+  get 'games/helicopter'
   get 'games/doodle_jump'
   get 'games/index'
   put 'user/:id/update_score', to: 'home#update_score'

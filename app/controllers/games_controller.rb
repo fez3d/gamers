@@ -15,4 +15,7 @@ class GamesController < ApplicationController
 
   def doodle_jump
   end
+
+  def helicopter
+  end
 end
