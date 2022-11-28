@@ -1,23 +1,29 @@
-  <style>
-    html, body {
-      height: 100%;
-      margin: 0;
-    }
+<style>
+  html, body {
+    height: 100%;
+    margin: 0;
+  }
 
-    body {
-      background: black;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-  </style>
-</head>
-<body>
+  body {
+    background: black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+</style>
+
+
+  
+<div class="d-flex flex-column">
+  <h2>Dinero: <span id="money">0</span></h2>
   <canvas width="800" height="550" id="game"></canvas>
-<body>
+  <div id="buttons" class="d-flex justify-content-center"></div>
+</div>
+
 <script>
   const canvas = document.getElementById('game');
   const context = canvas.getContext('2d');
+  var money = 0;
 
   const minTunnelWidth = 400;
   const maxTunnelWidth = canvas.width;
@@ -98,6 +104,28 @@
   // @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment
   const [ wallRed, wallGreen, wallBlue ] = wallData.data;
 
+  function addMoney() {
+    money = money + 2;
+    $('#money').text(money);
+  }
+
+  function addButtons() {
+    $("#buttons").append('<div class="btn-group"><a class="btn btn-primary" href="/games/index">Regresar</a><button class="btn btn-primary" onClick="location.reload();">Reiniciar</button></div>');
+  }
+
+  function showGameOver() {
+    context.fillStyle = 'black';
+    context.globalAlpha = 0.75;
+    context.fillRect(0, canvas.height / 2 - 30, canvas.width, 60);
+
+    context.globalAlpha = 1;
+    context.fillStyle = 'white';
+    context.font = '36px monospace';
+    context.textAlign = 'center';
+    context.textBaseline = 'middle';
+    context.fillText('GAME OVER!', canvas.width / 2, canvas.height / 2);
+  }
+
   // game loop
   let rAF;
   function loop() {
@@ -138,6 +166,7 @@
           start: tunnel.end,
           end: randInt(minHeight, maxHeight)
         });
+        addMoney();
       }
 
       // top tunnel wall
@@ -186,6 +215,7 @@
     // any pixels that match the wall color. the wall has to be drawn
     // above the helicopter in order for this to work
     const { data } = context.getImageData(helicopter.x, helicopter.y, helicopter.width, helicopter.height);
+    var first = true
 
     for (let i = 0; i < data.length; i += 4) {
       const r = data[i];
@@ -204,7 +234,14 @@
         context.arc(helicopter.x + helicopter.width / 2, helicopter.y + helicopter.height / 2, helicopter.width, 0, 2 * Math.PI);
         context.stroke();
 
-        cancelAnimationFrame(rAF);
+        if (first) {
+          first = false
+          cancelAnimationFrame(rAF);
+          console.log('1');
+          send_data();
+          showGameOver();
+          addButtons();
+        }
       }
     }
   }
@@ -225,4 +262,18 @@
 
   // start the game
   rAF = requestAnimationFrame(loop);
+
+  function send_data() {
+    $.ajax({
+      url: '<%="/user/#{current_user.id.to_s}/update_score"%>',
+      method: 'PUT',
+      data: { money: money },
+      success: function(result) {
+        alert('Se guardo el dinero')
+      },
+      error: function(result){
+        alert('No se pudo Guardar')
+      }
+    });
+  }
 </script>

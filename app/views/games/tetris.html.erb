@@ -16,8 +16,11 @@
   }
 </style>
 
-<h2>Dinero: <span id="money">0</span></h2>
-<canvas width="320" height="640" id="game"></canvas>
+<div class="d-flex flex-column">
+  <h2>Dinero: <span id="money">0</span></h2>
+  <canvas width="320" height="640" id="game"></canvas>
+  <div id="buttons" class="d-flex justify-content-center"></div>
+</div>
 
 <script>
   var money = 0
@@ -138,6 +141,11 @@
     context.textBaseline = 'middle';
     context.fillText('GAME OVER!', canvas.width / 2, canvas.height / 2);
     send_data();
+    addButtons();
+  }
+
+  function addButtons() {
+    $("#buttons").append('<div class="btn-group"><a class="btn btn-primary" href="/games/index">Regresar</a><button class="btn btn-primary" onClick="location.reload();">Reiniciar</button></div>');
   }
 
   const canvas = document.getElementById('game');

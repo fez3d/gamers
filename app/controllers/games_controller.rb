@@ -18,4 +18,7 @@ class GamesController < ApplicationController
 
   def helicopter
   end
+
+  def missile_command
+  end
 end

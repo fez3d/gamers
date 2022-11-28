@@ -15,8 +15,12 @@
   }
 </style>
 
-<h2>Dinero: <span id="money">0</span></h2>
-<canvas width="400" height="400" id="game"></canvas>
+<div class="d-flex flex-column">
+  <h2>Dinero: <span id="money">0</span></h2>
+  <canvas width="400" height="400" id="game"></canvas>
+  <div id="buttons" class="d-flex justify-content-center"></div>
+</div>
+
 
 <script>
   var money = 0;
@@ -60,7 +64,7 @@
 
   // game loop
   function loop() {
-    requestAnimationFrame(loop);
+    rAF = requestAnimationFrame(loop);
 
     // slow game loop to 15 fps instead of 60 (60/15 = 4)
     if (++count < 4) {
@@ -124,20 +128,30 @@
 
         // snake occupies same space as a body part. reset game
         if (cell.x === snake.cells[i].x && cell.y === snake.cells[i].y) {
-          snake.x = 160;
-          snake.y = 160;
-          snake.cells = [];
-          snake.maxCells = 4;
-          snake.dx = grid;
-          snake.dy = 0;
-
-          apple.x = getRandomInt(0, 25) * grid;
-          apple.y = getRandomInt(0, 25) * grid;
-
+          cancelAnimationFrame(rAF);
           send_data();
+          showGameOver();
+          addButtons();
         }
       }
     });
+  }
+
+  function addButtons() {
+    $("#buttons").append('<div class="btn-group"><a class="btn btn-primary" href="/games/index">Regresar</a><button class="btn btn-primary" onClick="location.reload();">Reiniciar</button></div>');
+  }
+
+  function showGameOver() {
+    context.fillStyle = 'black';
+    context.globalAlpha = 0.75;
+    context.fillRect(0, canvas.height / 2 - 30, canvas.width, 60);
+
+    context.globalAlpha = 1;
+    context.fillStyle = 'white';
+    context.font = '36px monospace';
+    context.textAlign = 'center';
+    context.textBaseline = 'middle';
+    context.fillText('GAME OVER!', canvas.width / 2, canvas.height / 2);
   }
 
   // listen to keyboard events to move the snake
@@ -170,7 +184,7 @@
   });
 
   // start the game
-  requestAnimationFrame(loop);
+  rAF = requestAnimationFrame(loop);
 
   function send_data() {
     $.ajax({
