@@ -15,10 +15,14 @@
     cursor: crosshair;
     border: 1px solid white;
   }
+
+  .white {
+    color: white;
+  }
 </style>
 
 <div class="d-flex flex-column">
-  <h2>Dinero: <span id="money">0</span></h2>
+  <h2 class="white">Dinero: <span id="money">0</span></h2>
   <canvas width="800" height="550" id="game"></canvas>
   <div id="buttons" class="d-flex justify-content-center"></div>
 </div>
@@ -125,7 +129,7 @@
   }
 
   function addMoney() {
-    money = money + 2;
+    money = money + 1;
     $('#money').text(money);
   }
 
@@ -143,7 +147,7 @@
     context.font = '36px monospace';
     context.textAlign = 'center';
     context.textBaseline = 'middle';
-    context.fillText('GAME OVER!', canvas.width / 2, canvas.height / 2);
+    context.fillText('FIN!', canvas.width / 2, canvas.height / 2);
   }
 
   function endGame() {
@@ -394,7 +398,6 @@
       method: 'PUT',
       data: { money: money },
       success: function(result) {
-        alert('Se guardo el dinero')
       },
       error: function(result){
         alert('No se pudo Guardar')

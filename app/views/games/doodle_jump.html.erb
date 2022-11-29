@@ -5,21 +5,30 @@
   }
 
   body {
+    background: black;
     display: flex;
     align-items: center;
     justify-content: center;
   }
 
   canvas {
-    border: 1px solid black;
+    border: 1px solid white;
+  }
+
+  .white {
+    color: white;
   }
 </style>
 
-<h2>Dinero: <span id="money">0</span></h2>
-<canvas width="375" height="667" id="game"></canvas>
+<div class="d-flex flex-column">
+  <h2 class="white">Dinero: <span id="money">0</span></h2>
+  <canvas width="375" height="667" id="game"></canvas>
+  <div id="buttons" class="d-flex justify-content-center"></div>
+</div>
 
 <script>
   var money = 0;
+  var temp_money = 0;
   const canvas = document.getElementById('game');
   const context = canvas.getContext('2d');
 
@@ -45,7 +54,8 @@
   }];
 
   function addMoney() {
-    money = money + 1;
+    temp_money = temp_money + .25;
+    money = Math.floor(temp_money);
     $('#money').text(money);
   }
 
@@ -97,6 +107,7 @@
   let prevDoodleY = doodle.y;
   let rAF = null;
   let gameOver = false;
+  let firstTime = true;
 
   // game loop
   function loop() {
@@ -167,7 +178,6 @@
     // draw platforms
     context.fillStyle = 'green';
     if(!gameOver){
-      console.log(1)
       platforms.forEach(function(platform) {
         context.fillRect(platform.x, platform.y, platformWidth, platformHeight);
 
@@ -191,7 +201,8 @@
           doodle.dy = bounceVelocity;
         }
 
-        if(doodle.x < -20) {
+        if (doodle.y > 660 && firstTime) {
+          firstTime = false;
           showGameOver();
         }
       });
@@ -245,8 +256,13 @@
     context.font = '36px monospace';
     context.textAlign = 'center';
     context.textBaseline = 'middle';
-    context.fillText('GAME OVER!', canvas.width / 2, canvas.height / 2);
+    context.fillText('FIN!', canvas.width / 2, canvas.height / 2);
+    addButtons();
     send_data();
+  }
+
+  function addButtons() {
+    $("#buttons").append('<div class="btn-group"><a class="btn btn-primary" href="/games/index">Regresar</a><button class="btn btn-primary" onClick="location.reload();">Reiniciar</button></div>');
   }
 
   // start the game
@@ -258,7 +274,6 @@
       method: 'PUT',
       data: { money: money },
       success: function(result) {
-        alert('Se guardo el dinero')
       },
       error: function(result){
         alert('No se pudo Guardar')

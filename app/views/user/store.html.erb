@@ -16,7 +16,8 @@
       text-align:center;
       padding-top:8px;
   }
-  #options_eyes, #option_eye_brows  {
+  #options_eyes, #option_eye_brows, #option_mouth, #option_hairstyle, #option_facilhair, #option_clothe, #option_glasses, #option_tattoo,
+  #option_accesory, #option_backgroundcolor  {
       display: flex;
       flex-wrap: nowrap;
       overflow-x: auto;
@@ -36,7 +37,7 @@
       border-top:1px solid #707070;
   }
 
-  .skins,.eyes,.eyebrows,.mouths,.hairstyles,.haircolors,.facialhairs,.clothes,.fabriccolors,.backgroundcolors,.glasses,.tattoos,.accesories {
+  .all,.skins,.eyes,.eyebrows,.mouths,.hairstyles,.haircolors,.facialhairs,.clothes,.fabriccolors,.backgroundcolors,.glasses,.tattoos,.accesories {
       flex: 0 0 auto;
       top:0;
       width:53px;
@@ -48,16 +49,37 @@
       background-color:#ffdbb4;
   }
 
-  .eyes,.eyebrows,.mouths,.hairstyles,.facialhairs,.clothes,.glasses,.tattoos,.accesories {
+  .all,.eyes,.eyebrows,.mouths,.hairstyles,.facialhairs,.clothes,.glasses,.tattoos,.accesories {
       background-image:url(https://i.imgur.com/q0DdlUI.png);
   }
 </style>
 
-<div id='footer'>
+<div class="container">
+    <div>
+        <a href="/user/profile" class="btn btn-primary m-2">Regresar</a>
+    </div>
+
+    <div class="w-100 border rounded d-flex flex-column">
+        <div class="d-flex justify-content-center border border-top-0 border-left-0">Compras</div>
+        <div class="d-flex justify-content-between">
+            <div class='all' id='e_"+"default"+"' style='background-color:#"+"ffdbb4"+";background-position:0px 0px;'></div>
+            <div></div>
+            <button class="btn btn-primary m-2">Pagar</button>
+        </div>
+    </div>
+    
     <div id='options'>
         <div id='options_title'>SELECT SKIN COLOR</div>
         <div id='options_eyes'></div>
         <div id='option_eye_brows'></div>
+        <div id='option_mouth'></div>
+        <div id='option_hairstyle'></div>
+        <div id='option_facilhair'></div>
+        <div id='option_clothe'></div>
+        <div id='option_glasses'></div>
+        <div id='option_tattoo'></div>
+        <div id='option_accesory'></div>
+        <div id='option_backgroundcolor'></div>
     </div>
 </div>
 <script>
@@ -65,30 +87,86 @@
   var eyes = ["default","dizzy","eyeroll","happy","close","hearts","side","wink","squint","surprised","winkwacky","cry"];
   var eyebrows = ["default","default2","raised","sad","sad2","unibrow","updown","updown2","angry","angry2"];
   var mouths = ["default","twinkle","tongue","smile","serious","scream","sad","grimace","eating","disbelief","concerned","vomit"];
-  var hairstyles = ["bold","longhair","longhairbob","hairbun","longhaircurly","longhaircurvy","longhairdread","nottoolong","miawallace","longhairstraight","longhairstraight2","shorthairdreads","shorthairdreads2","shorthairfrizzle","shorthairshaggy","shorthaircurly","shorthairflat","shorthairround","shorthairwaved","shorthairsides"];
+  var hairstyles = ["longhair","longhairbob","hairbun","longhaircurly","longhaircurvy","longhairdread","nottoolong","miawallace","longhairstraight","longhairstraight2","shorthairdreads","shorthairdreads2","shorthairfrizzle","shorthairshaggy","shorthaircurly","shorthairflat","shorthairround","shorthairwaved","shorthairsides"];
   var haircolors = ["bb7748_9a4f2b_6f2912","404040_262626_101010","c79d63_ab733e_844713","e1c68e_d0a964_b88339","906253_663d32_3b1d16","f8afaf_f48a8a_ed5e5e","f1e6cf_e9d8b6_dec393","d75324_c13215_a31608","59a0ff_3777ff_194bff"];
-  var facialhairs = ["none","magnum","fancy","magestic","light"];
+  var facialhairs = ["magnum","fancy","magestic","light"];
   var clothes = ["vneck","sweater","hoodie","overall","blazer"];
   var fabriccolors = ["545454","65c9ff","5199e4","25557c","e6e6e6","929598","a7ffc4","ffdeb5","ffafb9","ffffb1","ff5c5c","e3adff"];
   var backgroundcolors = ["ffffff","f5f6eb","e5fde2","d5effd","d1d0fc","f7d0fc","d0d0d0"];
-  var glasses = ["none","rambo","fancy","old","nerd","fancy2","harry"];
+  var glasses = ["rambo","fancy","old","nerd","fancy2","harry"];
   var glassopacities = ["10","25","50","75","100"];
-  var tattoos = ["none","harry","airbender","krilin","front","tribal","tribal2","throat"];
+  var tattoos = ["harry","airbender","krilin","front","tribal","tribal2","throat"];
   var accesories = ["none","earphones","earring1","earring2","earring3"];
 
     var eyeBrowsHtml = "";
     var eyesHtml = "";
+    var mouthHtml = "";
+    var hairstyleHtml = "";
+    var facialHairHtml = "";
+    var clotheHtml = "";
+    var glassesHtml = "";
+    var tattooHtml = "";
+    var accesoryhtml = "";
+    var backgroundcolorhtml = "";
+
     for (i=0;i<eyes.length; i++) {
         eye = eyes[i];
-        eyesHtml += "<div class='eyes' id='e_"+eye+"' style='background-color:#"+"ffdbb4"+";background-position:"+(i*-53)+"px 0px;'>$100</div>";
+        eyesHtml += "<div class='eyes' id='e_"+eye+"' style='background-color:#"+"ffdbb4"+";background-position:"+(i*-53)+"px 0px;'></div>";
     }
-    
 
     for (i=0;i<eyebrows.length; i++) {
         eyebrow = eyebrows[i];
-        eyeBrowsHtml += "<div class='eyebrows' id='eb_"+eyebrow+"' style='background-color:#"+"ffdbb4"+";background-position:"+(i*-53)+"px -53px;'> $100</div>";
+        eyeBrowsHtml += "<div class='eyebrows' id='eb_"+eyebrow+"' style='background-color:#"+"ffdbb4"+";background-position:"+(i*-53)+"px -53px;'></div>";
+    }
+
+    for (i=0;i<mouths.length; i++) {
+        mouth = mouths[i];
+        mouthHtml += "<div class='mouths' id='m_"+mouth+"' style='background-color:#"+"ffdbb4"+";background-position:"+(i*-53)+"px -106px;'></div>";
+    }
+
+    for (i=0;i<hairstyles.length; i++) {
+        hairstyle = hairstyles[i];
+        hairstyleHtml += "<div class='hairstyles' id='h_"+hairstyle+"' style='background-color:#ffdbb4;background-position:"+((i*-53) - 53)+"px -159px;'></div>";
+    }
+
+    for (i=0;i<facialhairs.length; i++) {
+        facialhair = facialhairs[i];
+        facialHairHtml += "<div class='facialhairs' id='f_"+facialhair+"' style='background-color:#ffdbb4;background-position:"+((i*-53) - 53)+"px -212px;'></div>";
+    }
+
+    for (var i=0;i<clothes.length; i++) {
+        clothe = clothes[i];
+        clotheHtml += "<div class='clothes' id='c_"+clothe+"' style='background-color:#ffdbb4;background-position:"+(i*-53)+"px -265px;'></div>";
+    }
+
+    for (var i=0;i<glasses.length; i++) {
+        glass = glasses[i];
+        glassesHtml += "<div class='glasses' id='g_"+glass+"' style='background-color:#ffdbb4;background-position:"+((i*-53) - 53)+"px -313px;'></div>";
+    }
+
+    for (var i=0;i<tattoos.length; i++) {
+        tattoo = tattoos[i];
+        tattooHtml += "<div class='tattoos' id='t_"+tattoo+"' style='background-color:#ffdbb4;background-position:"+((i*-53) - 53)+"px -419px;'></div>";
+    }
+
+    for (var i=0;i<accesories.length; i++) {
+        accesory = accesories[i];
+        accesoryhtml += "<div class='accesories' id='a_"+accesory+"' style='background-color:#ffdbb4;background-position:"+((i*-53) - 53)+"px -369px;'></div>";
+    }
+
+    for (var i=0;i<backgroundcolors.length; i++) {
+        backgroundcolor = backgroundcolors[i];
+        backgroundcolorhtml += "<div class='backgroundcolors' id='g_"+backgroundcolor+"' style='background-color:#"+backgroundcolor+";'></div>";
     }
 
     $("#options_eyes").html(eyesHtml);
     $("#option_eye_brows").html(eyeBrowsHtml);
+    $("#option_mouth").html(mouthHtml);
+    $("#option_hairstyle").html(hairstyleHtml);
+    $("#option_facilhair").html(facialHairHtml);
+    $("#option_clothe").html(clotheHtml);
+    $("#option_glasses").html(glassesHtml);
+    $("#option_tattoo").html(tattooHtml);
+    $("#option_accesory").html(accesoryhtml);
+    $("#option_backgroundcolor").html(backgroundcolorhtml);
 </script>

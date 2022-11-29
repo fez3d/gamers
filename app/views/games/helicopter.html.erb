@@ -10,13 +10,22 @@
     align-items: center;
     justify-content: center;
   }
+
+  #text_start {
+    color: white;
+  }
+
+  .white {
+    color: white;
+  }
 </style>
 
 
   
 <div class="d-flex flex-column">
-  <h2>Dinero: <span id="money">0</span></h2>
+  <h2 class="white">Dinero: <span id="money">0</span></h2>
   <canvas width="800" height="550" id="game"></canvas>
+  <div id="text_start" class="d-flex justify-content-center">Aprieta 'Espacio' para empezar</div>
   <div id="buttons" class="d-flex justify-content-center"></div>
 </div>
 
@@ -42,6 +51,7 @@
   // keep track of the spacebar being pressed so we can move the
   // helicopter up when pressed and down when not pressed
   let spacePressed = false;
+  let firstSpace = true;
 
   // clamp a number between min and max values
   function clamp(num, min, max) {
@@ -123,7 +133,7 @@
     context.font = '36px monospace';
     context.textAlign = 'center';
     context.textBaseline = 'middle';
-    context.fillText('GAME OVER!', canvas.width / 2, canvas.height / 2);
+    context.fillText('FIN!', canvas.width / 2, canvas.height / 2);
   }
 
   // game loop
@@ -132,6 +142,8 @@
     rAF = requestAnimationFrame(loop);
     context.clearRect(0,0,canvas.width,canvas.height);
 
+    
+
     if (spacePressed) {
       helicopter.ddy = -0.7;
     }
@@ -139,8 +151,13 @@
       helicopter.ddy = 0;
     }
 
-    // update position based on acceleration and velocity
-    helicopter.dy += helicopter.ddy + gravity;
+    if (firstSpace){
+      
+    } else {
+      // update position based on acceleration and velocity
+      helicopter.dy += helicopter.ddy + gravity;
+    }
+    
     // clamp velocity
     helicopter.dy = clamp(helicopter.dy, -8, 8);
     helicopter.y += helicopter.dy;
@@ -152,7 +169,11 @@
     // draw the tunnel walls over the helicopter
     context.fillStyle = 'green';
     tunnels.forEach((tunnel, index) => {
-      tunnel.x -= moveSpeed;
+      if (firstSpace) {
+
+      } else {
+        tunnel.x -= moveSpeed;
+      }
 
       // if the last tunnel is fully on screen, we need to spawn a new
       // tunnel segment off screen
@@ -189,22 +210,27 @@
     });
 
     // draw obstacles
-    obstacles.forEach((obstacle, index) => {
-      obstacle.x -= moveSpeed;
-      context.fillRect(obstacle.x, obstacle.y, obstacleWidth, obstacleHeight);
+    if (firstSpace) {
 
-      // if the last obstacle is fully on screen, we need to spawn a new
-      // one off screen
-      if (
-        index === obstacles.length - 1 &&
-        obstacle.x + obstacleWidth <= canvas.width
-      ) {
-        obstacles.push({
-          x: canvas.width * 2,
-          y: randInt(maxHeight + 50, canvas.height - obstacleHeight - maxHeight - 50)
-        });
-      }
-    });
+    } else {
+      obstacles.forEach((obstacle, index) => {
+        obstacle.x -= moveSpeed;
+        context.fillRect(obstacle.x, obstacle.y, obstacleWidth, obstacleHeight);
+
+        // if the last obstacle is fully on screen, we need to spawn a new
+        // one off screen
+        if (
+          index === obstacles.length - 1 &&
+          obstacle.x + obstacleWidth <= canvas.width
+        ) {
+          obstacles.push({
+            x: canvas.width * 2,
+            y: randInt(maxHeight + 50, canvas.height - obstacleHeight - maxHeight - 50)
+          });
+        }
+      });
+    }
+    
 
     // remove any tunnel segments or obstacles that are off screen
     tunnels = tunnels.filter(tunnel => tunnel.x + tunnel.width > 0);
@@ -249,12 +275,18 @@
   // listen to keyboard events to move the helicopter
   document.addEventListener('keydown', function(e) {
     // spacebar
-    if (e.code === 'Space') {
+    if (e.code === 'Space' && !firstSpace) {
       spacePressed = true;
     }
   });
   document.addEventListener('keyup', function(e) {
     // spacebar
+    if (e.code === 'Space' && firstSpace) {
+      firstSpace = false
+      spacePressed = false;
+      $("#text_start").remove();
+    }
+
     if (e.code === 'Space') {
       spacePressed = false;
     }
@@ -269,7 +301,6 @@
       method: 'PUT',
       data: { money: money },
       success: function(result) {
-        alert('Se guardo el dinero')
       },
       error: function(result){
         alert('No se pudo Guardar')

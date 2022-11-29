@@ -18,7 +18,6 @@
       left:0;
       width:361px;
       height:99px;
-      border-top:1px solid #707070;
   }
   #menu {
       position:absolute;
@@ -27,7 +26,6 @@
       width:60px;
       height:99px;
       background-color:#ffffff;
-      border-right:1px solid #707070;
       z-index:200;
       overflow:hidden;
   }
@@ -87,7 +85,7 @@
       top:34px;
       left:0;
       width:299px;
-      height:65px;
+      height:85px;
       overflow-y:hidden;
   }
   .skins,.eyes,.eyebrows,.mouths,.hairstyles,.haircolors,.facialhairs,.clothes,.fabriccolors,.backgroundcolors,.glasses,.tattoos,.accesories {
@@ -718,9 +716,6 @@
             });
         } else {
             $("#menu").removeClass("active");
-            $("#menu").css({
-                "border-right":"1px solid #707070"
-            });
             $("#menu").stop().animate({
                 "height":"99px"
             },{

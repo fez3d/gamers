@@ -14,10 +14,14 @@
   #text_start {
     color: white;
   }
+
+  .white {
+    color: white;
+  }
 </style>
 
 <div class="d-flex flex-column">
-  <h2>Dinero: <span id="money">0</span></h2>
+  <h2 class="white">Dinero: <span id="money">0</span></h2>
   <canvas width="400" height="500" id="game"></canvas>
   <div id="text_start" class="d-flex justify-content-center">Aprieta 'Espacio' para empezar</div>
   <div id="buttons" class="d-flex justify-content-center"></div>
@@ -266,7 +270,7 @@
     context.font = '36px monospace';
     context.textAlign = 'center';
     context.textBaseline = 'middle';
-    context.fillText('GAME OVER!', canvas.width / 2, canvas.height / 2);
+    context.fillText('FIN!', canvas.width / 2, canvas.height / 2);
   }
 
   // start the game
@@ -278,7 +282,6 @@
       method: 'PUT',
       data: { money: money },
       success: function(result) {
-        alert('Se guardo el dinero')
       },
       error: function(result){
         alert('No se pudo Guardar')
